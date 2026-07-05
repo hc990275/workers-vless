@@ -1,4 +1,4 @@
-const CFG = { id: '78f2c50b-9062-4f73-823d-f2c15d3e332c', chunk: 64 * 1024, dnPack: 32 * 1024, dnTail: 512, dnMs: 0, upPack: 16 * 1024, upQMax: 256 * 1024, maxED: 8 * 1024 };
+const CFG = { id: '78f2c50b-9062-4f73-823d-f2c15d3e332c', chunk: 64 * 1024, dnPack: 32 * 1024, dnTail: 512, dnMs: 0, upPack: 20 * 1024, upQMax: 256 * 1024, maxED: 8 * 1024 };
 export default { fetch: req => req.headers.get('Upgrade')?.toLowerCase() === 'websocket' ? ws(req) : new Response('Hello world!') };
 const hex = c => (c > 64 ? c + 9 : c) & 0xF;
 const idB = new Uint8Array(16), dec = new TextDecoder();
@@ -61,7 +61,7 @@ const ws = req => {
   }
   const pi = u.pathname.indexOf('/p='); if (pi >= 0) { pParam = u.pathname.slice(pi + 3); mode = 'p'; }
 
-  const [client, server] = Object.values(new WebSocketPair()); server.accept(); server.binaryType = 'arraybuffer';
+  const [client, server] = Object.values(new WebSocketPair()); server.accept({ allowHalfOpen: true }); server.binaryType = 'arraybuffer';
   const fetcher = req.fetcher;
   const edStr = req.headers.get('sec-websocket-protocol'); const ed = edStr && edStr.length <= CFG.maxED * 4 / 3 + 4 ? b64UrlToU8(edStr) : null;
   let curW = null, sock = null, closed = false, busy = false, udpWriter = null, isDNS = false, dnsHead = null;
